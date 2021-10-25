@@ -22,15 +22,18 @@ uniform float size;
 
 varying vec4 vMvPosition;
 varying vec3 vColor;
+varying float vOffsetY;
 
 void main() {
-    float offset = sin(position.z + position.x + position.y) * 1000.0 * cos(position.z + position.x + position.y);
+    float offset = sin(position.z + position.x + position.y) * cos(position.z + position.x + position.y);
     vec4 mvPosition = modelViewMatrix * vec4(
-        position.x + 10.0 * sin((time + offset) / 1000.0),
-        position.y + 10.0 * sin((time + offset) / 700.0) + 10.0 * cos((time + offset) / 1200.0),
-        position.z + 10.0 * cos((time + offset) / 800.0),
+        position.x + 10.0 * sin((time + offset) / 5000.0),
+        position.y + 10.0 * sin((time + offset) / 1000.0) + 10.0 * cos((time + offset) / 1200.0),
+        position.z + 10.0 * cos((time + offset) / 2000.0),
         1.0
     );
+    vOffsetY = (sin((time + offset) / 1000.0) + 1.0) / 2.0;
+
     vMvPosition = mvPosition;
     vColor = color;
     gl_PointSize = (size + (sin(radians(((time + offset) / 10.0) * 2.0)) * 10.0 - 10.0)) * (100.0 / length(mvPosition.xyz));
@@ -44,6 +47,7 @@ uniform sampler2D texture5;
 
 varying vec4 vMvPosition;
 varying vec3 vColor;
+varying float vOffsetY;
 
 vec3 hsv2rgb(vec3 c){
     vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
@@ -56,6 +60,7 @@ void main() {
     float opacity = 200.0 / length(vMvPosition.xyz);
     
     gl_FragColor = vec4(custom_color, opacity) * texture2D(texture5, gl_PointCoord);
+    gl_FragColor.rgb = vOffsetY * gl_FragColor.rgb;
 }
 `;
 
