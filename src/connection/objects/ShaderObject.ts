@@ -15,11 +15,10 @@ export interface ShaderObjectProps {
     vertex?: string;
 }
 
-const vert = `attribute vec3 color;
-
+const vert = `
+attribute vec3 color;
 uniform float time;
 uniform float size;
-
 varying vec4 vMvPosition;
 varying vec3 vColor;
 varying float vOffsetY;
@@ -44,7 +43,6 @@ void main() {
 
 const frag = `
 uniform sampler2D texture5;
-
 varying vec4 vMvPosition;
 varying vec3 vColor;
 varying float vOffsetY;
@@ -58,7 +56,7 @@ vec3 hsv2rgb(vec3 c){
 void main() {
     vec3 custom_color = hsv2rgb(vColor);
     float opacity = 200.0 / length(vMvPosition.xyz);
-    
+
     gl_FragColor = vec4(custom_color, opacity) * texture2D(texture5, gl_PointCoord);
     gl_FragColor.rgb = vOffsetY * gl_FragColor.rgb;
 }
